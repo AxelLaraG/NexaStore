@@ -1,0 +1,26 @@
+# Dependencias (Cubre raíz, apps/* y packages/* automáticamente)
+node_modules/
+
+# Compilaciones y caché de Angular / TypeScript
+dist/
+out-tsc/
+.angular/
+*.tsbuildinfo
+
+# Variables de entorno y secretos (Cubre cualquier carpeta del monorepo)
+.env
+*.env.*
+!.env.example
+
+# Datos sensibles de Base de Datos (IDs aleatorios de catálogos)
+database/seeds.psql
+
+# Configuraciones de editores, IA y Sistema Operativo (Windows)
+.vscode/
+.gemini/
+.DS_Store
+Thumbs.db
+
+# Logs de errores
+npm-debug.log*
+pnpm-debug.log*
