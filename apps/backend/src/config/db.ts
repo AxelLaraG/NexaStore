@@ -29,7 +29,7 @@ export const CATALOG_IDs = {
         PENDIENTE: Number(process.env.USR_STAT_PENDIENTE),
     },
     CORP_STATUS: {
-        ACTIVO: Number(process.env.CORP_STAT_ACTIVO),
+        ACTIVO: Number(process.env.CORP_STAT_ACTIVA),
         PRUEBA: Number(process.env.CORP_STAT_PRUEBA),
         MOROSA: Number(process.env.CORP_STAT_MOROSA),
         CANCELADA: Number(process.env.CORP_STAT_CANCELADA),

@@ -86,7 +86,7 @@ app.post('/api/auth/login', async (req: Request, res: Response<LoginResponseDTO>
 
         if (user.id_role === CATALOG_IDs.ROLES.SELLER) {
             const sellerShops = await pool.query<{ id_shop: string }>(
-                `SELECT id_shop FROM core.sh_sellers WHER id_usr = $1 AND is_active = TRUE`,
+                `SELECT id_shop FROM core.sh_sellers WHERE id_usr = $1 AND is_active = TRUE`,
                 [user.id]
             );
 
@@ -132,7 +132,7 @@ app.post('/api/auth/login', async (req: Request, res: Response<LoginResponseDTO>
             }
         } else if (user.id_role === CATALOG_IDs.ROLES.ENTERPRISE) {
             const corpQuery = await pool.query<{ id_corp: string }>(
-                `SELECT id_corp FROM core.corps_owners WHER id_usr = $1 AND is_active = TRUE ORDER BY is_main DESC LIMIT 1`,
+                `SELECT id_corp FROM core.corps_owners WHERE id_usr = $1 AND is_active = TRUE ORDER BY is_main DESC LIMIT 1`,
                 [user.id]
             );
 
@@ -166,17 +166,17 @@ app.post('/api/auth/login', async (req: Request, res: Response<LoginResponseDTO>
         await pool.query(
             `INSERT INTO logs.auditorias (id, id_usr, table_name, transaction_type, user_agent)
              VALUES ($1, $2, 'core.USERS', 'LOGIN', $3)`,
-            [generateCalculateID, user.id, req.headers["user-agent"] || "Unknown"]
+            [generateCalculateID(), user.id, req.headers["user-agent"] || "Unknown"]
         );
 
         const sessionUser: AuthUsrSessionDTO = {
-            id: Number(user.id),
+            id: user.id,
             email: user.email,
             name: user.name,
             lastName: user.lastn_1,
             role: user.role_name,
-            id_corp: id_corp ? Number(id_corp) : null,
-            id_shop: id_shop ? Number(id_shop) : null,
+            id_corp: id_corp ? id_corp : null,
+            id_shop: id_shop ? id_shop : null,
             needs_device_binding: needs_device_binding ? needs_device_binding : false
         }
 

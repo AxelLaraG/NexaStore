@@ -19,12 +19,12 @@ export interface LoginResponseDTO {
 }
 
 export interface AuthUsrSessionDTO {
-  id: number;
+  id: string;
   email: string;
   name: string;
   lastName: string;
   role: RoleName;
-  id_corp?: number | null;
-  id_shop?: number | null;
+  id_corp?: string | null;
+  id_shop?: string | null;
   needs_device_binding?: boolean;
 }

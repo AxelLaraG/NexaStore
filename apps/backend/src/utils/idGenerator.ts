@@ -11,5 +11,5 @@ export function generateCalculateID():string{
 
     counter = counter >= 99 ? 10 : counter + 1;
     
-    return `${yyyy}${mm}${dd}${hh}${min}${ss}`;
+    return `${yyyy}${mm}${dd}${hh}${min}${ss}${counter}`;
 }
