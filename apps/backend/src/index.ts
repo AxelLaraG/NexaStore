@@ -55,94 +55,138 @@ app.get(
 app.post(
 	"/api/auth/createUser",
 	async (req: Request, res: Response<CreateUserResponseDTO>) => {
+		const {
+			id_role,
+			id_status,
+			id_shops,
+			is_gen,
+			id_corp,
+			perc,
+			is_main,
+			email,
+			phone_num,
+			password,
+			name,
+			lastn_1,
+			lastn_2,
+			birthdate,
+		} = req.body as CreateUserRequestDTO;
+
+		if (!id_role || !name || !password || !email || !lastn_1) {
+			res.status(400).json({
+				ok: false,
+				message: "Datos incompletos para crear al usuario.",
+			});
+			return;
+		}
+
+		if (
+			(id_role === CATALOG_IDs.ROLES.ADMIN ||
+				id_role === CATALOG_IDs.ROLES.SELLER) &&
+			(!id_shops || id_shops.length === 0)
+		) {
+			res.status(400).json({
+				ok: false,
+				message: "Datos incompletos para crear al usuario.",
+			});
+			return;
+		}
+
+		if (id_role === CATALOG_IDs.ROLES.ENTERPRISE && !id_corp) {
+			res.status(400).json({
+				ok: false,
+				message: "Datos incompletos para crear al usuario.",
+			});
+			return;
+		}
+
+		const client = await pool.connect();
+
 		try {
-			const {
-				id_role,
-				id_status,
-				id_shops,
-				is_gen,
-				id_corp,
-				perc,
-				is_main,
-				email,
-				phone_num,
-				password,
-				name,
-				lastn_1,
-				lastn_2,
-				birthdate,
-			} = req.body as CreateUserRequestDTO;
+			const emailQuery = await pool.query<{ id_user: string }>(
+				`SELECT id FROM core.users WHERE LOWER(email) = LOWER($1) LIMIT 1`,
+				[email.trim()],
+			);
 
-			if (!id_role || !name || !password || !email || !lastn_1) {
+			if (emailQuery.rows[0]) {
 				res.status(400).json({
 					ok: false,
-					message: "Datos incompletos para crear al usuario.",
+					message: "El correo ya está en uso.",
 				});
 				return;
 			}
 
-			if (
-				(id_role === CATALOG_IDs.ROLES.ADMIN ||
-					id_role === CATALOG_IDs.ROLES.SELLER) &&
-				(!id_shops || id_shops.length === 0)
-			) {
-				res.status(400).json({
-					ok: false,
-					message: "Datos incompletos para crear al usuario.",
-				});
-				return;
-			}
+			await client.query("BEGIN");
 
-			if (id_role === CATALOG_IDs.ROLES.ENTERPRISE && !id_corp) {
-				res.status(400).json({
-					ok: false,
-					message: "Datos incompletos para crear al usuario.",
-				});
-				return;
-			}
+			const newUserId = generateCalculateID();
+			const hashedPass = await bcrypt.hash(password, 10);
+			const finalStatus = id_status ?? CATALOG_IDs.USER_STATUS.ACTIVO;
+			const isActive = finalStatus === CATALOG_IDs.USER_STATUS.ACTIVO;
 
-			const client = await pool.connect();
-
-			try {
-				const emailQuery = await pool.query<{ id_user: string }>(
-					`SELECT id_user FROM core.users WHERE LOWER(email) = LOWER($1) LIMIT 1`,
-					[email.trim()],
-				);
-
-				if (emailQuery.rows[0]) {
-					res.status(400).json({
-						ok: false,
-						message: "El correo ya está en uso.",
-					});
-					return;
-				}
-
-				await client.query("BEGIN");
-
-				const newUserId = generateCalculateID();
-				const hashedPass = await bcrypt.hash(password, 10);
-				const finalStatus = id_status ?? CATALOG_IDs.USER_STATUS.ACTIVO;
-				const isActive = finalStatus === CATALOG_IDs.USER_STATUS.ACTIVO;
-
-				await client.query(
-					`INSERT INTO core.users (id, id_role, id_status, is_active, email, phone_num, password, name, lastn_1, lastn_2, cr_date, birthdate )
+			await client.query(
+				`INSERT INTO core.users (id, id_role, id_status, is_active, email, phone_num, password, name, lastn_1, lastn_2, cr_date, birthdate )
                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_DATE, $11);`,
-					[
-						newUserId,
-						id_role,
-						finalStatus,
-						isActive,
-						email,
-						phone_num,
-						hashedPass,
-						name,
-						lastn_1,
-						lastn_2,
-						birthdate,
-					],
+				[
+					newUserId,
+					id_role,
+					finalStatus,
+					isActive,
+					email.trim().toLowerCase(),
+					phone_num?.trim() || null,
+					hashedPass,
+					name.trim(),
+					lastn_1.trim(),
+					lastn_2?.trim() || null,
+					birthdate ?? null,
+				],
+			);
+
+			if (id_role === CATALOG_IDs.ROLES.SELLER && id_shops) {
+				for (const shopId of id_shops) {
+					await client.query(
+						`INSERT INTO core.sh_sellers (id_shop, id_usr, asign_at,is_active) VALUES ($1, $2, CURRENT_TIMESTAMP,TRUE)`,
+						[shopId, newUserId],
+					);
+				}
+			} else if (id_role === CATALOG_IDs.ROLES.ENTERPRISE && id_corp) {
+				await client.query(
+					`INSERT INTO core.corps_owners (id_corp, id_usr, asign_at, perc, is_main, is_active) VALUES ($1, $2, CURRENT_TIMESTAMP, $3, $4, TRUE)`,
+					[id_corp, newUserId, perc ?? 100.0, is_main ?? true],
 				);
-			} catch (error) {}
-		} catch (e) {}
+			} else if (id_role === CATALOG_IDs.ROLES.ADMIN && id_shops) {
+				for (const shopId of id_shops) {
+					await client.query(
+						`INSERT INTO core.sh_admins (id_shop, id_usr, asign_at, is_gen, is_active) VALUES ($1, $2, CURRENT_TIMESTAMP, $3, TRUE)`,
+						[shopId, newUserId, is_gen ?? true],
+					);
+				}
+			}
+
+			await client.query(
+				`INSERT INTO logs.auditorias (id, id_usr, table_name, transaction_type, user_agent) VALUES ($1, $2, 'core.USERS', 'INSERT', $3)`,
+				[
+					generateCalculateID(),
+					newUserId,
+					req.headers["user-agent"] || "Unknown",
+				],
+			);
+
+			await client.query("COMMIT");
+
+			res.status(201).json({
+				ok: true,
+				message: "Usuario creado y asignado correctamente.",
+				id_user: newUserId,
+			});
+		} catch (error) {
+			console.error("Error en POST /api/auth/createUser: ", error);
+			res.status(500).json({
+				ok: false,
+				message: "Error interno del servidor al crear usuario.",
+			});
+		} finally {
+			client.release();
+		}
 	},
 );
 
@@ -219,8 +263,8 @@ app.post(
 
 				if (matchedCookieShop) {
 					id_shop = matchedCookieShop.id_shop;
-				} else if (sellerShops.rowCount === 1) {
-					id_shop = sellerShops.rows[0]!.id_shop;
+				} else if (sellerShops.rowCount === 1 && sellerShops.rows[0]) {
+					id_shop = sellerShops.rows[0]?.id_shop;
 				} else {
 					res.status(403).json({
 						ok: false,
@@ -240,10 +284,10 @@ app.post(
 				);
 				if (matchedCookieShop) {
 					id_shop = matchedCookieShop.id_shop;
-				} else if (adminShops.rowCount === 1) {
-					id_shop = adminShops.rows[0]!.id_shop;
-				} else if ((adminShops.rowCount ?? 0) > 1) {
-					id_shop = adminShops.rows[0]!.id_shop;
+				} else if (adminShops.rowCount === 1 && adminShops.rows[0]) {
+					id_shop = adminShops.rows[0]?.id_shop;
+				} else if ((adminShops.rowCount ?? 0) > 1 && adminShops.rows[0]) {
+					id_shop = adminShops.rows[0]?.id_shop;
 					needs_device_binding = true;
 				}
 			} else if (user.id_role === CATALOG_IDs.ROLES.ENTERPRISE) {
@@ -266,8 +310,8 @@ app.post(
 
 					if (matchedCookieShop) {
 						id_shop = matchedCookieShop.id;
-					} else if (shopsQuery.rowCount === 1) {
-						id_shop = shopsQuery.rows[0]!.id;
+					} else if (shopsQuery.rowCount === 1 && shopsQuery.rows[0]) {
+						id_shop = shopsQuery.rows[0]?.id;
 					} else if ((shopsQuery.rowCount ?? 0) > 1) {
 						needs_device_binding = !deviceShopCookie;
 					}
