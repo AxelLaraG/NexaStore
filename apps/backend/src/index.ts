@@ -1,19 +1,19 @@
 import type {
 	ApiStatusResponse,
-	LoginRequestDTO,
 	AuthUsrSessionDTO,
-	LoginResponseDTO,
 	CreateUserRequestDTO,
 	CreateUserResponseDTO,
+	LoginRequestDTO,
+	LoginResponseDTO,
 } from "@NexaStore/shared";
-import express, { type Request, type Response } from "express";
-import cors from "cors";
+import bcrypt from "bcryptjs";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import express, { type Request, type Response } from "express";
+import jwt from "jsonwebtoken";
 import { CATALOG_IDs, pool } from "./config/db.js";
 import type { UserLoginRow } from "./types/db.types.js";
-import bcrypt from "bcryptjs";
 import { generateCalculateID } from "./utils/idGenerator.js";
-import jwt from "jsonwebtoken";
 
 const app = express();
 const PORT = process.env.BE_PORT;

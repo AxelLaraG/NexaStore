@@ -1,31 +1,31 @@
 {
-  "compilerOptions": {
-    // File Layout
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "target": "es2023",
-    "lib": ["es2023"],
-    "types": ["node"],
-    "sourceMap": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "skipLibCheck": true,
+	"compilerOptions": {
+		// File Layout
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"target": "es2023",
+		"lib": ["es2023"],
+		"types": ["node"],
+		"sourceMap": true,
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"skipLibCheck": true,
 
-    // Environment Settings
+		// Environment Settings
 
-    // Other Outputs
-    "declaration": true,
-    "declarationMap": true,
+		// Other Outputs
+		"declaration": true,
+		"declarationMap": true,
 
-    // Recommended Options
-    "jsx": "react-jsx",
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-  },
-  "include": ["src/**/*"],
+		// Recommended Options
+		"jsx": "react-jsx",
+		"noUncheckedSideEffectImports": true,
+		"moduleDetection": "force"
+	},
+	"include": ["src/**/*"]
 }
