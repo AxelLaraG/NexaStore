@@ -18,6 +18,29 @@ export interface LoginResponseDTO {
   user?: AuthUsrSessionDTO;
 }
 
+export interface CreateUserRequestDTO {
+  id_role: number;
+  id_status?: number;
+  id_shops?: number[];
+  is_gen?: boolean;
+  id_corp?: number;
+  perc?: number;
+  is_main?: boolean;
+  email: string;
+  phone_num?: string;
+  password: string;
+  name: string;
+  lastn_1: string;
+  lastn_2?: string;
+  birthdate?: Date;
+}
+
+export interface CreateUserResponseDTO {
+  ok: boolean;
+  message: string;
+  id_user?: string;
+}
+
 export interface AuthUsrSessionDTO {
   id: string;
   email: string;
