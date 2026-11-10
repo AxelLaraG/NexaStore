@@ -206,10 +206,10 @@ app.post(
 			const userQuery = await pool.query<UserLoginRow>(
 				`SELECT u.id, u.id_role, r.role AS role_name, u.id_status, u.is_active,
                     u.email, u.password, u.name, u.lastn_1
-            FROM core.users u
-            INNER JOIN catalogs.role_cat r ON u.id_role = r.id
-            WHERE LOWER(u.email) = LOWER($1)
-            LIMIT 1`,
+					FROM core.users u
+					INNER JOIN catalogs.role_cat r ON u.id_role = r.id
+					WHERE LOWER(u.email) = LOWER($1)
+					LIMIT 1`,
 				[email.trim()],
 			);
 
