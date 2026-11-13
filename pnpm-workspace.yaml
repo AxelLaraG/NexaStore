@@ -6,3 +6,6 @@ allowBuilds:
   esbuild: true
   lmdb: true
   msgpackr-extract: true
+overrides:
+  '@emnapi/core': '2.0.0-beta.3'
+  '@emnapi/runtime': '2.0.0-beta.3'

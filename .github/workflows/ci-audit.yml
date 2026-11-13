@@ -1,0 +1,48 @@
+name: Auditoría de Monorepo (NexaStore)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  auditoria-calidad-seguridad:
+    # Usa la etiqueta de tu contenedor runner en Portainer (ej. debian-backend-agent o self-hosted)
+    runs-on: [self-hosted, linux, nexastore-ci]
+
+    steps:
+      - name: 1. Descargar el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - name: 3. Configurar Node.js y caché de pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: 4. Instalar dependencias (Modo estricto CI)
+        # --frozen-lockfile asegura que el servidor instale exactamente lo que hay en tu lockfile sin modificarlo
+        run: pnpm install --frozen-lockfile
+
+      - name: 5. Auditar vulnerabilidades de seguridad
+        run: pnpm audit --audit-level=moderate
+
+      - name: 6. Auditar conflictos de Peer Dependencies
+        run: pnpm peers check
+
+      - name: 7. Auditar formato y linting con Biome
+        run: pnpm biome check .
+
+      - name: 8. Validar integridad de tipos (TypeScript)
+        run: pnpm -r exec tsc --noEmit
+
+      - name: 9. Revisar paquetes obsoletos o desactualizados
+        # continue-on-error evita que el pipeline se marque como fallido solo porque salió una nueva versión menor de una librería
+        continue-on-error: true
+        run: pnpm -r outdated
