@@ -9,7 +9,7 @@ on:
 jobs:
   auditoria-calidad-seguridad:
     # Usa la etiqueta de tu contenedor runner en Portainer (ej. debian-backend-agent o self-hosted)
-    runs-on: [self-hosted, linux, nexastore-ci]
+    runs-on: [self-hosted, Linux, X64, nexastore-ci]
 
     steps:
       - name: 1. Descargar el código del repositorio
