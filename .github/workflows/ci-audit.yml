@@ -2,9 +2,9 @@ name: Auditoría de Monorepo (NexaStore)
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   auditoria-calidad-seguridad:
@@ -23,8 +23,8 @@ jobs:
       - name: 3. Configurar Node.js y caché de pnpm
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
 
       - name: 4. Instalar dependencias (Modo estricto CI)
         # --frozen-lockfile asegura que el servidor instale exactamente lo que hay en tu lockfile sin modificarlo
