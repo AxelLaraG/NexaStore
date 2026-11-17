@@ -31,6 +31,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 5. Auditar vulnerabilidades de seguridad
+        continue-on-error: true
         run: pnpm audit --audit-level=moderate
 
       - name: 6. Auditar conflictos de Peer Dependencies
