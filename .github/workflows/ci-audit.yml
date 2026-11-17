@@ -2,7 +2,7 @@ name: Auditoría de Monorepo (NexaStore)
 
 on:
   push:
-    branches: [main, develop]
+    branches: ['**']
   pull_request:
     branches: [main]
 
