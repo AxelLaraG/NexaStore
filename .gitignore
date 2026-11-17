@@ -6,6 +6,7 @@ dist/
 out-tsc/
 .angular/
 *.tsbuildinfo
+.nx/
 
 # Variables de entorno y secretos (Cubre cualquier carpeta del monorepo)
 .env
