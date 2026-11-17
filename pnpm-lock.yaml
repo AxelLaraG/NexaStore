@@ -172,7 +172,7 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.6.6
+        specifier: 2.6.6
         version: 2.6.6
 
   apps/admin-pos:
