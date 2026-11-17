@@ -10,4 +10,4 @@ allowBuilds:
 overrides:
   "@emnapi/core": "2.0.0-beta.3"
   "@emnapi/runtime": "2.0.0-beta.3"
-  tldts-core: '^7.5.1'
+  tldts-core: "^7.5.1"
