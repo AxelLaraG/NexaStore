@@ -1,24 +1,24 @@
-import { inject, InjectionToken, type ValueProvider } from "@angular/core";
+import { InjectionToken, inject, type ValueProvider } from "@angular/core";
 
 export type HlmCardConfig = {
-  size: "sm" | "default";
+	size: "sm" | "default";
 };
 
 const defaultConfig: HlmCardConfig = {
-  size: "default",
+	size: "default",
 };
 
 const HlmCardConfigToken = new InjectionToken<HlmCardConfig>("HlmCardConfig");
 
 export function provideHlmCardConfig(
-  config: Partial<HlmCardConfig>,
+	config: Partial<HlmCardConfig>,
 ): ValueProvider {
-  return {
-    provide: HlmCardConfigToken,
-    useValue: { ...defaultConfig, ...config },
-  };
+	return {
+		provide: HlmCardConfigToken,
+		useValue: { ...defaultConfig, ...config },
+	};
 }
 
 export function injectHlmCardConfig(): HlmCardConfig {
-  return inject(HlmCardConfigToken, { optional: true }) ?? defaultConfig;
+	return inject(HlmCardConfigToken, { optional: true }) ?? defaultConfig;
 }

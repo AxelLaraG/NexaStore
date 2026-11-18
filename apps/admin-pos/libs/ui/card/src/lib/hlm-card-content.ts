@@ -2,12 +2,12 @@ import { Directive } from "@angular/core";
 import { classes } from "@spartan-ng/helm/utils";
 
 @Directive({
-  selector: "[hlmCardContent]",
-  exportAs: "hlmCardContent",
-  host: { "data-slot": "card-content" },
+	selector: "[hlmCardContent]",
+	exportAs: "hlmCardContent",
+	host: { "data-slot": "card-content" },
 })
 export class HlmCardContent {
-  constructor() {
-    classes(() => "px-(--card-spacing)");
-  }
+	constructor() {
+		classes(() => "px-(--card-spacing)");
+	}
 }
