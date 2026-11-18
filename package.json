@@ -8,7 +8,8 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev:backend": "pnpm --filter backend dev",
 		"dev:admin": "pnpm --filter admin-pos start",
-		"build:all": "pnpm -r build"
+		"build:all": "pnpm -r build",
+		"dev:check": "pnpm biome check --write"
 	},
 	"keywords": [],
 	"author": "",
