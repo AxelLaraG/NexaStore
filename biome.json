@@ -35,5 +35,23 @@
 				"organizeImports": "on"
 			}
 		}
-	}
+	},
+	"overrides": [
+		{
+			"includes": ["**/libs/ui/**"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"useIterableCallbackReturn": "off"
+					},
+					"style": {
+						"noNonNullAssertion": "off"
+					},
+					"complexity": {
+						"noBannedTypes": "off"
+					}
+				}
+			}
+		}
+	]
 }
