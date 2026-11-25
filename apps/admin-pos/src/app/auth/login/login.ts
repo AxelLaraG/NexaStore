@@ -33,8 +33,8 @@ export class Login {
 	readonly errorMessage = signal<string | null>(null);
 
 	readonly loginForm = this.fb.group({
-		email: ["", Validators.required, Validators.email],
-		password: ["", Validators.required, Validators.minLength(8)],
+		email: ["", [Validators.required, Validators.email]],
+		password: ["", [Validators.required, Validators.minLength(8)]],
 	});
 
 	onSubmit(): void {
