@@ -13,3 +13,6 @@ overrides:
   tldts-core: "^7.5.1"
   "zod": ">=4.6.6"
   "minimatch": ">=11.0.1"
+peerDependencyRules:
+  allowedVersions:
+    "@angular-devkit/core>chokidar": "6"
