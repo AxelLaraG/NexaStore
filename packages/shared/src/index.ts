@@ -21,9 +21,9 @@ export interface LoginResponseDTO {
 export interface CreateUserRequestDTO {
 	id_role: number;
 	id_status?: number;
-	id_shops?: number[];
+	id_shops?: string[];
 	is_gen?: boolean;
-	id_corp?: number;
+	id_corp?: string;
 	perc?: number;
 	is_main?: boolean;
 	email: string;

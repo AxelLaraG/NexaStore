@@ -15,7 +15,7 @@ export async function createAuditLog(
 	await db.query(
 		`INSERT INTO logs.auditorias (id, id_usr, table_name, transaction_type, user_agent) VALUES ($1, $2, $3, $4, $5)`,
 		[
-			generateCalculateID,
+			generateCalculateID(),
 			params.userId,
 			params.tableName,
 			params.transactionType,
