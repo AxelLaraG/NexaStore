@@ -11,7 +11,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
-import { CATALOG_IDs, pool } from "./config/db.js";
+import { CATALOG_IDs } from "./config/catalogs.js";
+import { pool } from "./config/db.js";
 import type { UserLoginRow } from "./types/db.types.js";
 import { generateCalculateID } from "./utils/idGenerator.js";
 

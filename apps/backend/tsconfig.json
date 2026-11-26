@@ -19,8 +19,8 @@
 		// Environment Settings
 
 		// Other Outputs
-		"declaration": true,
-		"declarationMap": true,
+		"declaration": false,
+		"declarationMap": false,
 
 		// Recommended Options
 		"jsx": "react-jsx",
